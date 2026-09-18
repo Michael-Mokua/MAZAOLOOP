@@ -122,7 +122,7 @@ export default function LandingPage() {
                 Open Burning Avoided
               </div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.875rem', fontWeight: 800, color: '#fff' }}>
-                4,200+ <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Tons CO₂e</span>
+                -- <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Tons CO₂e</span>
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Black carbon mitigation</div>
             </div>
@@ -133,7 +133,7 @@ export default function LandingPage() {
                 Biomass Monetized
               </div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.875rem', fontWeight: 800, color: '#fff' }}>
-                18,500+ <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Tons</span>
+                -- <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Tons</span>
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Maize stover, bagasse &amp; husks</div>
             </div>
@@ -144,7 +144,7 @@ export default function LandingPage() {
                 Farmer Income Created
               </div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.875rem', fontWeight: 800, color: '#fff' }}>
-                KES 34.2M+
+                KES 0.00
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>New circular revenue line</div>
             </div>
@@ -155,7 +155,7 @@ export default function LandingPage() {
                 AI Match Accuracy
               </div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.875rem', fontWeight: 800, color: '#fff' }}>
-                94.8%
+                AI Model Loading...
               </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Groq Llama 3.3 70B reasoning</div>
             </div>
@@ -501,15 +501,15 @@ export default function LandingPage() {
                 gap: 10,
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fff' }}>🌽 Maize Stalks (Rongai)</span>
-                  <span className="badge badge-primary" style={{ fontSize: '0.6875rem' }}>21.4 km</span>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fff' }}>No Active Local Supply</span>
+                  <span className="badge badge-primary" style={{ fontSize: '0.6875rem' }}>-- km</span>
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  Target: GreenFlame Briquettes (Nakuru Town)
+                  Awaiting farmer listing in radius...
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: selectedRadius >= 22 ? 'var(--primary-300)' : '#ef4444' }}>
-                  {selectedRadius >= 22 ? <CheckCircle2 size={14} /> : <span style={{ fontWeight: 'bold' }}>✕</span>}
-                  {selectedRadius >= 22 ? 'Feasible Haulage Match (96% Compatibility)' : 'Exceeds transport radius cutoff'}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: '#ef4444' }}>
+                  <span style={{ fontWeight: 'bold' }}>✕</span>
+                  No matching facilities found within {selectedRadius} km
                 </div>
               </div>
 

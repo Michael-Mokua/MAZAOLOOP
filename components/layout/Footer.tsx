@@ -49,7 +49,7 @@ export default function Footer() {
               color: 'var(--primary-300)',
             }}>
               <Code2 size={14} />
-              <span>Created by Michael Ogutu Mokua • mikesth3tic.dev</span>
+              <span>Created by Michael Ogutu Mokua • mikesth3tic-dev.vercel.app</span>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ export default function Footer() {
               Engineered with modern full-stack web architecture, Supabase RLS, and high-speed Groq LPU inference.
             </p>
             <a
-              href="https://mikesth3tic.dev"
+              href="https://mikesth3tic-dev.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -107,7 +107,7 @@ export default function Footer() {
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Developed by</div>
                 <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: '#34d399', fontSize: '0.9375rem' }}>
-                  mikesth3tic.dev
+                  mikesth3tic-dev.vercel.app
                 </div>
               </div>
               <ExternalLink size={16} color="var(--text-muted)" />
@@ -128,7 +128,7 @@ export default function Footer() {
           color: 'var(--text-muted)',
         }}>
           <div>
-            © {new Date().getFullYear()} MazaoLoop. Built &amp; engineered by <a href="https://mikesth3tic.dev" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-400)', fontWeight: 600, textDecoration: 'none' }}>Michael Ogutu Mokua</a> (mikesth3tic.dev).
+            © {new Date().getFullYear()} MazaoLoop. Built &amp; engineered by <a href="https://mikesth3tic-dev.vercel.app" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-400)', fontWeight: 600, textDecoration: 'none' }}>Michael Ogutu Mokua</a> (mikesth3tic-dev.vercel.app).
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

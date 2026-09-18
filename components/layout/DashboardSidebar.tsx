@@ -179,7 +179,7 @@ export default function DashboardSidebar() {
           Sign In / Register
         </Link>
         <a
-          href="https://mikesth3tic.dev"
+          href="https://mikesth3tic-dev.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -197,7 +197,7 @@ export default function DashboardSidebar() {
         >
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--primary-400)', fontSize: '0.6875rem', fontWeight: 600, marginBottom: 2 }}>
-              <Code2 size={13} /> mikesth3tic.dev
+              <Code2 size={13} /> mikesth3tic-dev.vercel.app
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
               By Michael Ogutu Mokua

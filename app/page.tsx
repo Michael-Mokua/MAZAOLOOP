@@ -43,14 +43,14 @@ export default function LandingPage() {
           {/* Top Badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
             <a
-              href="https://mikesth3tic.dev"
+              href="https://mikesth3tic-dev.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="badge badge-primary"
               style={{ padding: '6px 14px', fontSize: '0.8125rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}
             >
               <Code2 size={14} />
-              <span>Engineered by Michael Ogutu Mokua (mikesth3tic.dev)</span>
+              <span>Engineered by Michael Ogutu Mokua (mikesth3tic-dev.vercel.app)</span>
             </a>
             <span className="badge badge-amber" style={{ padding: '6px 14px', fontSize: '0.8125rem' }}>
               <Zap size={14} />

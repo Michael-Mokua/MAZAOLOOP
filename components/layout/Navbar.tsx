@@ -52,13 +52,13 @@ export default function Navbar() {
                 MazaoLoop
               </span>
               <a
-                href="https://mikesth3tic.dev"
+                href="https://mikesth3tic-dev.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="badge badge-primary"
                 style={{ fontSize: '0.65rem', padding: '2px 6px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 3 }}
               >
-                <span>mikesth3tic.dev</span>
+                <span>mikesth3tic-dev.vercel.app</span>
               </a>
             </div>
             <div style={{ fontSize: '0.6875rem', color: 'var(--text-secondary)', letterSpacing: '0.02em' }}>

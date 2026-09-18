@@ -160,6 +160,24 @@ export default function DashboardSidebar() {
 
       {/* Studio Attribution in Sidebar */}
       <div>
+        <Link
+          href="/login"
+          style={{
+            padding: '12px 14px',
+            background: 'var(--primary-600)',
+            color: '#fff',
+            borderRadius: 'var(--radius-md)',
+            marginBottom: 12,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textDecoration: 'none',
+            fontSize: '0.875rem',
+            fontWeight: 600,
+          }}
+        >
+          Sign In / Register
+        </Link>
         <a
           href="https://mikesth3tic.dev"
           target="_blank"

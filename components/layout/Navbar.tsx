@@ -88,6 +88,9 @@ export default function Navbar() {
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Link href="/login" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', padding: '6px 12px' }}>
+            Log In
+          </Link>
           <Link href="/dashboard" className="btn btn-secondary btn-sm" style={{ display: 'inline-flex' }}>
             Open Platform
           </Link>

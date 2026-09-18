@@ -1,215 +1,202 @@
 'use client';
 
-import { useState } from 'react';
-import { MOCK_MESSAGES, MOCK_MATCHES, MOCK_PROFILES } from '@/lib/mock-data';
+import { useState, useEffect, useRef } from 'react';
+import { getStoredMatches, getStoredMessages, saveMessage } from '@/lib/data-store';
+import { Match, Message } from '@/lib/types';
+import { formatDistance, formatDate } from '@/lib/utils';
 import {
-  MessageSquare,
   Send,
-  PhoneCall,
-  MapPin,
-  Calendar,
+  User,
+  Factory,
+  Tractor,
+  Clock,
   ShieldCheck,
-  Truck,
-  CheckCircle2,
-  Lock,
 } from 'lucide-react';
 
 export default function MessagesPage() {
-  const [messages, setMessages] = useState(MOCK_MESSAGES);
-  const [inputVal, setInputVal] = useState('');
-  const [activeMatch, setActiveMatch] = useState(MOCK_MATCHES[0]);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [activeMatchId, setActiveMatchId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  
+  const currentUserId = 'usr_f1'; // Mocking current user as Farmer for demo perspective
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const allMatches = getStoredMatches().filter(m => m.status === 'accepted');
+    setMatches(allMatches);
+    if (allMatches.length > 0 && !activeMatchId) {
+      setActiveMatchId(allMatches[0].id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeMatchId) {
+      setMessages(getStoredMessages(activeMatchId));
+    } else {
+      setMessages([]);
+    }
+  }, [activeMatchId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputVal.trim()) return;
+    if (!newMessage.trim() || !activeMatchId) return;
 
-    const newMsg = {
-      id: `msg_${Date.now()}`,
-      match_id: activeMatch.id,
-      sender_id: 'usr_f3',
-      content: inputVal.trim(),
-      created_at: new Date().toISOString(),
-      sender: MOCK_PROFILES[2],
-    };
+    const saved = saveMessage({
+      match_id: activeMatchId,
+      sender_id: currentUserId,
+      content: newMessage.trim(),
+    });
 
-    setMessages([...messages, newMsg]);
-    setInputVal('');
+    setMessages([...messages, saved]);
+    setNewMessage('');
   };
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-      {/* Header */}
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-          <span className="badge badge-primary">Trade &amp; Logistics Exchange</span>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Verified Counterparty Channel</span>
-        </div>
-        <h1 style={{ fontSize: '1.75rem', color: '#fff', marginBottom: 4 }}>
-          Crop Waste Trade Messaging
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-          Negotiate farm-gate pricing, verify transport truck clearance, and schedule bulk loading.
+  if (matches.length === 0) {
+    return (
+      <div className="glass-card" style={{ padding: 48, textAlign: 'center' }}>
+        <h2 style={{ fontSize: '1.5rem', color: '#fff', marginBottom: 12 }}>No Active Chats</h2>
+        <p style={{ color: 'var(--text-secondary)' }}>
+          You need to accept an AI Match in the Matches tab before you can message the counterparty.
         </p>
       </div>
+    );
+  }
 
-      {/* Two-Pane Messaging Interface */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(280px, 320px) 1fr',
-        gap: 20,
-        minHeight: 560,
-      }}>
-        {/* Left Pane: Conversations / Matches */}
-        <div className="glass-card" style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
-            Active Trade Deals
-          </div>
+  const activeMatch = matches.find(m => m.id === activeMatchId);
 
-          {MOCK_MATCHES.map((match) => {
-            const isSelected = activeMatch.id === match.id;
+  return (
+    <div style={{ height: 'calc(100vh - 120px)', display: 'flex', gap: 20 }}>
+      {/* Thread List Sidebar */}
+      <div className="glass-card" style={{ width: 320, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ padding: 20, borderBottom: '1px solid var(--border-subtle)', background: 'rgba(10, 18, 14, 0.4)' }}>
+          <h2 style={{ fontSize: '1.125rem', color: '#fff', fontWeight: 600 }}>Trade Inboxes</h2>
+        </div>
+        
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+          {matches.map((match) => {
+            const isBuyer = currentUserId === match.demand?.buyer_id;
+            const otherPartyName = isBuyer ? match.listing?.farmer?.organization_name : match.demand?.buyer?.organization_name;
+            const icon = isBuyer ? <Tractor size={16} /> : <Factory size={16} />;
+
             return (
               <button
                 key={match.id}
-                onClick={() => setActiveMatch(match)}
+                onClick={() => setActiveMatchId(match.id)}
                 style={{
-                  padding: 14,
-                  borderRadius: 'var(--radius-md)',
-                  background: isSelected ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.02)',
-                  border: isSelected ? '1px solid var(--primary-400)' : '1px solid var(--border-subtle)',
+                  padding: 16,
+                  border: 'none',
+                  borderBottom: '1px solid var(--border-subtle)',
+                  background: activeMatchId === match.id ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                  borderLeft: activeMatchId === match.id ? '3px solid var(--primary-500)' : '3px solid transparent',
                   textAlign: 'left',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 6,
+                  transition: 'background 0.2s',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fff' }}>
-                    {match.demand?.buyer?.organization_name || 'Buyer'}
-                  </span>
-                  <span className="badge badge-primary" style={{ fontSize: '0.65rem' }}>
-                    {match.match_score}% Match
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: activeMatchId === match.id ? '#fff' : 'var(--text-primary)', fontWeight: 600, fontSize: '0.9375rem' }}>
+                  {icon}
+                  <span style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                    {otherPartyName || 'Unknown Partner'}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  12.5T Maize Stalks • Rongai → Nakuru
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  {match.listing?.waste_type.replace('_', ' ')} • {formatDistance(match.distance_km)}
                 </div>
               </button>
             );
           })}
         </div>
+      </div>
 
-        {/* Right Pane: Active Thread */}
-        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          {/* Thread Header */}
-          <div style={{
-            padding: '16px 24px',
-            borderBottom: '1px solid var(--border-subtle)',
-            background: 'rgba(10, 18, 14, 0.8)',
+      {/* Main Chat Area */}
+      {activeMatch && (
+        <div className="glass-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {/* Chat Header */}
+          <div style={{ 
+            padding: 20, 
+            borderBottom: '1px solid var(--border-subtle)', 
+            background: 'rgba(10, 18, 14, 0.4)',
             display: 'flex',
-            flexWrap: 'wrap',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 12,
+            alignItems: 'center'
           }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <h3 style={{ fontSize: '1.0625rem', color: '#fff' }}>
-                  {activeMatch.demand?.buyer?.organization_name}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <h3 style={{ fontSize: '1.125rem', color: '#fff', fontWeight: 600 }}>
+                  {currentUserId === activeMatch.demand?.buyer_id ? activeMatch.listing?.farmer?.organization_name : activeMatch.demand?.buyer?.organization_name}
                 </h3>
-                <span className="badge badge-amber" style={{ fontSize: '0.6875rem' }}>
-                  Verified Off-taker
+                <span className="badge badge-primary" style={{ padding: '2px 6px', fontSize: '0.65rem' }}>
+                  <ShieldCheck size={10} /> Verified
                 </span>
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <MapPin size={12} color="var(--primary-400)" />
-                Nakuru Industrial Plant • 21.4 km distance
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                Negotiating: {activeMatch.listing?.quantity_kg}kg {activeMatch.listing?.waste_type.replace('_', ' ')}
               </div>
             </div>
-
-            {/* Direct Phone Call Button */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <a
-                href="tel:+254701223344"
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem', display: 'inline-flex', gap: 6, color: '#fcd34d' }}
-              >
-                <PhoneCall size={14} />
-                <span>+254 701 223 344</span>
-              </a>
+            
+            <div className="match-score-badge high">
+              {activeMatch.match_score}% Match
             </div>
           </div>
 
-          {/* Messages Feed */}
-          <div style={{
-            flex: 1,
-            padding: 24,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-            overflowY: 'auto',
-            maxHeight: 400,
-          }}>
+          {/* Messages Scroll Area */}
+          <div style={{ flex: 1, padding: 24, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
             {messages.map((msg) => {
-              const isMe = msg.sender_id === 'usr_f3';
+              const isMine = msg.sender_id === currentUserId;
               return (
-                <div
-                  key={msg.id}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: isMe ? 'flex-end' : 'flex-start',
+                <div key={msg.id} style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: isMine ? 'flex-end' : 'flex-start',
+                }}>
+                  <div style={{
                     maxWidth: '75%',
-                    alignSelf: isMe ? 'flex-end' : 'flex-start',
-                  }}
-                >
-                  <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginBottom: 4 }}>
-                    {msg.sender?.full_name || (isMe ? 'You' : 'Buyer')}
-                  </div>
-                  <div
-                    style={{
-                      padding: '12px 18px',
-                      borderRadius: 16,
-                      background: isMe
-                        ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
-                        : 'rgba(255, 255, 255, 0.05)',
-                      border: isMe ? 'none' : '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      fontSize: '0.875rem',
-                      lineHeight: 1.5,
-                    }}
-                  >
+                    padding: '12px 16px',
+                    borderRadius: 'var(--radius-md)',
+                    background: isMine ? 'var(--primary-700)' : 'rgba(255, 255, 255, 0.05)',
+                    border: isMine ? '1px solid var(--primary-600)' : '1px solid var(--border-subtle)',
+                    color: '#fff',
+                    fontSize: '0.9375rem',
+                    lineHeight: 1.5,
+                  }}>
                     {msg.content}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <Clock size={10} />
+                    {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
               );
             })}
+            <div ref={messagesEndRef} />
           </div>
 
-          {/* Message Input Box */}
-          <form onSubmit={handleSend} style={{
-            padding: '16px 20px',
-            borderTop: '1px solid var(--border-subtle)',
-            background: 'rgba(10, 18, 14, 0.95)',
-            display: 'flex',
-            gap: 12,
-          }}>
-            <input
-              type="text"
-              className="form-input"
-              style={{ flex: 1 }}
-              placeholder="Discuss loading time, pricing (KES/kg), or truck access..."
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-            />
-            <button type="submit" className="btn btn-primary btn-md">
-              <Send size={16} />
-              <span>Send</span>
-            </button>
-          </form>
+          {/* Input Area */}
+          <div style={{ padding: 20, borderTop: '1px solid var(--border-subtle)', background: 'rgba(10, 18, 14, 0.4)' }}>
+            <form onSubmit={handleSend} style={{ display: 'flex', gap: 12 }}>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Type your message to negotiate transport and pricing..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <button type="submit" className="btn btn-primary" disabled={!newMessage.trim()}>
+                <Send size={16} />
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
